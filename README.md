@@ -1,1 +1,43 @@
 # harness-project
+
+A tiny Flask app used as a hands-on playground for learning **Harness CI/CD**.
+
+## The app
+
+| Endpoint  | Returns                                   |
+|-----------|-------------------------------------------|
+| `/`       | message, `APP_VERSION`, pod hostname       |
+| `/health` | `{"status": "ok"}` (used by K8s probes)    |
+
+## Run locally
+
+```bash
+# Tests (inside a container, the same way CI runs them)
+docker run --rm -v "$PWD":/src -w /src python:3.12-slim \
+  sh -c "pip install -q -r requirements-dev.txt && python -m pytest -q"
+
+# Build and run
+docker build -t harness-demo:local --build-arg APP_VERSION=local-1 .
+docker run --rm -p 8080:8080 harness-demo:local
+curl localhost:8080/
+```
+
+## Layout
+
+```
+app.py               # Flask app
+tests/               # pytest tests
+Dockerfile           # production image (gunicorn, non-root)
+k8s/                 # Deployment + Service manifests (deployed by Harness CD)
+kind-config.yaml     # local Kubernetes cluster for the lab
+.harness/            # Harness pipeline YAML (added in later steps)
+```
+
+## Lab roadmap
+
+1. ✅ App, tests, Dockerfile, K8s manifests
+2. Push to GitHub
+3. Harness setup: account, project, connectors (GitHub, Docker Hub)
+4. CI pipeline: test → build → push image — see `.harness/ci-pipeline.yaml`
+5. Git trigger on push to `main`
+6. *(future)* CD: deploy to Kubernetes, approvals, canary/rollback
