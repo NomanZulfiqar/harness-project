@@ -3,7 +3,7 @@
 #
 # Before importing, make sure these identifiers match what you created in Harness:
 #   orgIdentifier / projectIdentifier  -> your org + project
-#   github_connector                   -> GitHub connector (Repository URL type)
+#   github_connector                   -> GitHub connector (scoped to NomanZulfiqar/harness-project)
 #   dockerhub_connector                -> Docker Registry connector for Docker Hub
 pipeline:
   name: harness-demo-ci
@@ -15,6 +15,7 @@ pipeline:
     ci:
       codebase:
         connectorRef: github_connector
+        repoName: harness-project
         build:
           type: branch
           spec:
@@ -24,7 +25,7 @@ pipeline:
       type: String
       description: Docker Hub username (image is pushed to <docker_user>/harness-demo)
       required: true
-      value: <+input>
+      value: <+input>.default(noman1213)
   stages:
     - stage:
         name: Build and Test
