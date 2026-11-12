@@ -1,6 +1,6 @@
 pipeline:
-  id: harness_demo_ci
-  name: harness-demo-ci
+  id: harness_pipeline_demo
+  name: harness-pipeline-demo
   clone:
     enabled: true
     connector: github_connector
